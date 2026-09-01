@@ -36,6 +36,8 @@
     </main>
 
 <script>
+
+    // Obtém o elemento canvas e seu contexto 2D
     var canvas = document.getElementById("gameCanvas");
     var ctx = canvas.getContext("2d");
 
@@ -49,13 +51,15 @@
         atualizarCanvas();
     };
 
+    // Adiciona um ouvinte de eventos para capturar as teclas pressionadas
+
     document.addEventListener("keydown", function(event) {
 
         if (event.key === "ArrowRight") {
             posicaoX += 50;
             
-            if (posicaoX > canvas.width - 200) {
-                posicaoX = canvas.width - 200;
+            if (posicaoX > canvas.width - 150) {
+                posicaoX = canvas.width - 150;
             }
             atualizarCanvas();
         }
@@ -70,7 +74,7 @@
         }
 
         if (event.key === "ArrowUp") {
-            posicaoY -= 50;
+            posicaoY -= 150;
             
             if (posicaoY < 0) {
                 posicaoY = 0;
@@ -79,19 +83,51 @@
         }
 
         if (event.key === "ArrowDown") {
-            posicaoY += 50;
+            posicaoY += 150;
             
-            if (posicaoY > canvas.height - 200) {
-                posicaoY = canvas.height - 200;
+            if (posicaoY > canvas.height - 150) {
+                posicaoY = canvas.height - 150;
             }
             atualizarCanvas();
         }
 
     });
 
+    
+
+
+    // Desenha o cenario inicial do jogo
+    function desenharCenario() {
+        ctx.fillStyle = "#555";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.strokeStyle = "#fff";
+        ctx.lineWidth = 5;
+
+        ctx.setLineDash([50, 30]);
+
+        const alturaFaixa = canvas.height / 4;
+
+        for (let i = 0; i < 5; i++) {
+            ctx.beginPath();
+            ctx.moveTo(0, alturaFaixa * i);
+            ctx.lineTo(canvas.width, alturaFaixa * i);
+            ctx.stroke();
+        }
+    ctx.setLineDash([]);
+    }
+
+    // Atualiza o canvas com a nova posição do carro
+
     function atualizarCanvas() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.drawImage(carro, posicaoX, posicaoY, 200, 200);
+
+        desenharCenario();
+
+        ctx.drawImage(carro, posicaoX, posicaoY, 150, 150);
+
+
+        requestAnimationFrame(atualizarCanvas);
     }
 </script>
     
