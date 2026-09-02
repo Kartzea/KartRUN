@@ -3,133 +3,134 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kart Run ~by Kartzea</title>
+
+    <title>KARTRUNNN</title>
 
     <style>
         .body{
-            background-color: black;
-            color: white;
-            align-items: center;
-            justify-content: center;
-            box-sizing: border-box;
+            background-color: rgb(66, 66, 66);
+
             margin: 0;
-            padding: 0;
-            margin-top: 20vh;
+            overflow: hidden;
+            text-align: center;
         }
 
-        .main{
-            width: 1200px;
-            height: 600px;
-            background-color: rgb(14, 5, 66);
-            margin: 0 auto;
+        #myCanvas{
+
+            background-color: rgb(129, 129, 129);
 
         }
-
-
     </style>
-
 </head>
 <body class="body">
-    
-    <main class="main">
-        <canvas id="gameCanvas" width="1200" height="600"></canvas>
-    </main>
+    <canvas id="myCanvas"></canvas>
 
-<script>
 
-    // Obtém o elemento canvas e seu contexto 2D
-    var canvas = document.getElementById("gameCanvas");
-    var ctx = canvas.getContext("2d");
+    <script>
+        // Controles
+        class Constrols {
+            constructor() {
+                
+                this.forward = false;
+                this.left = false;
+                this.right = false;
+                this.reverse = false;
 
-    var carro = new Image();
-    carro.src = "carro.png";
+                this.#addKeyboardListeners()
 
-    var posicaoX = 0;
-    var posicaoY = 0;
-
-    carro.onload = function() {
-        atualizarCanvas();
-    };
-
-    // Adiciona um ouvinte de eventos para capturar as teclas pressionadas
-
-    document.addEventListener("keydown", function(event) {
-
-        if (event.key === "ArrowRight") {
-            posicaoX += 50;
-            
-            if (posicaoX > canvas.width - 150) {
-                posicaoX = canvas.width - 150;
             }
-            atualizarCanvas();
-        }
-
-        if (event.key === "ArrowLeft") {
-            posicaoX -= 50;
-            
-            if (posicaoX < 0) {
-                posicaoX = 0;
+            #addKeyboardListeners(){
+                document.onkeydown = (event) => {
+                    switch(event.key) {
+                        case "ArrowLeft":
+                            this.left = true
+                            break
+                        case "ArrowRight":
+                            this.right = true
+                            break
+                        case "ArrowUp":
+                            this.up = true
+                            break
+                        case "ArrowDown":
+                            this.down = true
+                            break
+                        console.log(this)
+                    }
+                }
+                
+                document.onkeyup = (event) => {
+                    switch(event.key) {
+                        case "ArrowLeft":
+                            this.left = false
+                            break
+                        case "ArrowRight":
+                            this.right = false
+                            break
+                        case "ArrowUp":
+                            this.up = false
+                            break
+                        case "ArrowDown":
+                            this.down = false
+                            break
+                        console.log(this)
+                    }
+                }
             }
-            atualizarCanvas();
         }
+        // Carro
+        class Car {
+            constructor(x,y, width, height) {
+                this.x = x;
+                this.y = y;
+                this.width = width;
+                this.height = height;
 
-        if (event.key === "ArrowUp") {
-            posicaoY -= 150;
-            
-            if (posicaoY < 0) {
-                posicaoY = 0;
+                this.controls = new Constrols();
             }
-            atualizarCanvas();
-        }
 
-        if (event.key === "ArrowDown") {
-            posicaoY += 150;
-            
-            if (posicaoY > canvas.height - 150) {
-                posicaoY = canvas.height - 150;
+            update(){
+                if(this.controls.up){
+                    this.y -= 2
+                }             
+                if(this.controls.down){
+                    this.y += 2
+                }   
             }
-            atualizarCanvas();
+            
+            draw(ctx) {
+                ctx.beginPath();
+                    ctx.rect(
+                        this.x - this.width / 2,
+                        this.y - this.height / 2,
+                        this.width,
+                        this.height
+                    )
+                    ctx.fill()
+
+            }
         }
 
-    });
-
-    
-
-
-    // Desenha o cenario inicial do jogo
-    function desenharCenario() {
-        ctx.fillStyle = "#555";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-        ctx.strokeStyle = "#fff";
-        ctx.lineWidth = 5;
-
-        ctx.setLineDash([50, 30]);
-
-        const alturaFaixa = canvas.height / 4;
-
-        for (let i = 0; i < 5; i++) {
-            ctx.beginPath();
-            ctx.moveTo(0, alturaFaixa * i);
-            ctx.lineTo(canvas.width, alturaFaixa * i);
-            ctx.stroke();
+        const canvas = document.getElementById('myCanvas');
+        canvas.width = 400;
+        
+        const ctx = canvas.getContext('2d');
+        const car = new Car(200,400, 100, 120);
+        
+        animate()
+        
+        function animate(){
+            car.update(),
+            canvas.height = window.innerHeight;
+            car.draw(ctx)
+            requestAnimationFrame(animate)
         }
-    ctx.setLineDash([]);
-    }
-
-    // Atualiza o canvas com a nova posição do carro
-
-    function atualizarCanvas() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        desenharCenario();
-
-        ctx.drawImage(carro, posicaoX, posicaoY, 150, 150);
 
 
-        requestAnimationFrame(atualizarCanvas);
-    }
-</script>
-    
+
+
+
+
+    </script>
+
 </body>
 </html>
